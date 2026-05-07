@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MongoDB Features</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    MongoDB Features
+</header>
+
+<div class="container">
+
+    <div class="card">
+        <h2>User Registration</h2>
+
+        <input id="username" placeholder="Username">
+        <input id="email" placeholder="Email">
+        <input id="password" placeholder="Password">
+
+        <button onclick="registerUser()">Register</button>
+    </div>
+
+    <div class="card">
+        <h2>Send Message</h2>
+
+        <input id="sender" placeholder="Sender">
+        <input id="receiver" placeholder="Receiver">
+        <input id="content" placeholder="Message">
+
+        <button onclick="sendMessage()">Send Message</button>
+    </div>
+
+    <div class="card">
+        <h2>Create Group Chat</h2>
+
+        <input id="groupName" placeholder="Group Name">
+        <input id="groupMembers" placeholder="Members separated by commas">
+
+        <button onclick="createGroup()">Create Group</button>
+    </div>
+
+    <div class="card">
+        <h2>MongoDB Queries</h2>
+
+        <button onclick="getUsers()">Get Users</button>
+        <button onclick="getMessages()">Get Messages</button>
+        <button onclick="getGroups()">Get Groups</button>
+        <button onclick="mostActiveUsers()">Most Active Users</button>
+        <button onclick="recentChats()">Recent Chats</button>
+    </div>
+
+    <div class="card">
+        <h2>Result</h2>
+
+        <div class="result-box" id="result">
+            Results will appear here...
+        </div>
+    </div>
+
+    <a href="index.html">
+        <button>Back Home</button>
+    </a>
+
+</div>
+
+<script>
+const API_URL = "http://localhost:3000";
+
+function showResult(data) {
+    document.getElementById("result").textContent =
+        JSON.stringify(data, null, 2);
+}
+
+async function request(url, method = "GET", body = null) {
+
+    const options = {
+        method,
+        headers: {
+            "Content-Type": "application/json"
+        }
+    };
+
+    if (body) {
+        options.body = JSON.stringify(body);
+    }
+
+    const response = await fetch(API_URL + url, options);
+
+    const data = await response.json();
+
+    showResult(data);
+}
+
+function registerUser() {
+    request("/mongo/register", "POST", {
+        username: document.getElementById("username").value,
+        email: document.getElementById("email").value,
+        password: document.getElementById("password").value
+    });
+}
+
+function sendMessage() {
+    request("/mongo/messages", "POST", {
+        sender: document.getElementById("sender").value,
+        receiver: document.getElementById("receiver").value,
+        content: document.getElementById("content").value
+    });
+}
+
+function createGroup() {
+    request("/mongo/groups", "POST", {
+        name: document.getElementById("groupName").value,
+        members: document.getElementById("groupMembers").value.split(",")
+    });
+}
+
+function getUsers() {
+    request("/mongo/users");
+}
+
+function getMessages() {
+    request("/mongo/messages");
+}
+
+function getGroups() {
+    request("/mongo/groups");
+}
+
+function mostActiveUsers() {
+    request("/mongo/aggregations/most-active-users");
+}
+
+function recentChats() {
+    request("/mongo/aggregations/recent-chats");
+}
+</script>
+
+</body>
+</html>

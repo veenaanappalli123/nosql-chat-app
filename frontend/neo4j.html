@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Neo4j Features</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    Neo4j Features
+</header>
+
+<div class="container">
+
+    <div class="card">
+        <h2>Friend Management</h2>
+
+        <input id="user1" placeholder="User 1">
+        <input id="user2" placeholder="User 2">
+
+        <br>
+
+        <button onclick="addFriend()">Add Friend</button>
+        <button onclick="checkFriend()">Check Friend</button>
+        <button onclick="mutualFriends()">Mutual Friends</button>
+        <button onclick="removeFriend()">Remove Friend</button>
+    </div>
+
+    <div class="card">
+        <h2>Get All Friends</h2>
+
+        <input id="singleUser" placeholder="User">
+
+        <button onclick="getAllFriends()">Get All Friends</button>
+    </div>
+
+    <div class="card">
+        <h2>Result</h2>
+
+        <div class="result-box" id="result">
+            Results will appear here...
+        </div>
+    </div>
+
+    <a href="index.html">
+        <button>Back Home</button>
+    </a>
+
+</div>
+
+<script>
+
+const API_URL = "http://localhost:3000";
+
+function showResult(data) {
+    document.getElementById("result").textContent =
+        JSON.stringify(data, null, 2);
+}
+
+async function request(url, method = "GET", body = null) {
+
+    const options = {
+        method,
+        headers: {
+            "Content-Type": "application/json"
+        }
+    };
+
+    if (body) {
+        options.body = JSON.stringify(body);
+    }
+
+    const response = await fetch(API_URL + url, options);
+
+    const data = await response.json();
+
+    showResult(data);
+}
+
+function addFriend() {
+    request("/neo/add-friend", "POST", {
+        user1: document.getElementById("user1").value,
+        user2: document.getElementById("user2").value
+    });
+}
+
+function checkFriend() {
+    request("/neo/check-friend", "POST", {
+        user1: document.getElementById("user1").value,
+        user2: document.getElementById("user2").value
+    });
+}
+
+function mutualFriends() {
+    request("/neo/mutual-friends", "POST", {
+        user1: document.getElementById("user1").value,
+        user2: document.getElementById("user2").value
+    });
+}
+
+function removeFriend() {
+    request("/neo/remove-friend", "POST", {
+        user1: document.getElementById("user1").value,
+        user2: document.getElementById("user2").value
+    });
+}
+
+function getAllFriends() {
+    request("/neo/get-all-friends", "POST", {
+        user: document.getElementById("singleUser").value
+    });
+}
+
+</script>
+
+</body>
+</html>

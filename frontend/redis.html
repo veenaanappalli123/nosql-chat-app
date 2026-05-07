@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Redis Features</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    Redis Features
+</header>
+
+<div class="container">
+
+    <div class="card">
+        <h2>User Status</h2>
+        <input id="userId" placeholder="User ID">
+        <button onclick="setOnline()">Set Online</button>
+        <button onclick="getOnline()">Get Online Status</button>
+        <button onclick="getOnlineUsers()">Get Online Users</button>
+    </div>
+
+    <div class="card">
+        <h2>Typing Indicator</h2>
+        <input id="fromUser" placeholder="From User">
+        <input id="toUser" placeholder="To User">
+        <button onclick="setTyping()">Set Typing</button>
+    </div>
+
+    <div class="card">
+        <h2>Recent Chats Cache</h2>
+        <input id="recentMessage" placeholder="Recent message">
+        <button onclick="addRecentChat()">Add Recent Chat</button>
+        <button onclick="getRecentChats()">Get Recent Chats</button>
+    </div>
+
+    <div class="card">
+        <h2>Session and Notifications</h2>
+        <button onclick="createSession()">Create Session</button>
+        <button onclick="logoutUser()">Logout</button>
+        <button onclick="incrementUnread()">Increment Unread</button>
+        <button onclick="getLastSeen()">Get Last Seen</button>
+    </div>
+
+    <div class="card">
+        <h2>Result</h2>
+        <div class="result-box" id="result">
+            Results will appear here...
+        </div>
+    </div>
+
+    <a href="index.html">
+        <button>Back Home</button>
+    </a>
+
+</div>
+
+<script>
+const API_URL = "http://localhost:3000";
+
+function showResult(data) {
+    document.getElementById("result").textContent =
+        JSON.stringify(data, null, 2);
+}
+
+async function request(url, method = "GET", body = null) {
+    const options = {
+        method,
+        headers: {
+            "Content-Type": "application/json"
+        }
+    };
+
+    if (body) {
+        options.body = JSON.stringify(body);
+    }
+
+    const response = await fetch(API_URL + url, options);
+    const data = await response.json();
+    showResult(data);
+}
+
+function setOnline() {
+    request("/redis/online", "POST", {
+        userId: document.getElementById("userId").value
+    });
+}
+
+function getOnline() {
+    const userId = document.getElementById("userId").value;
+    request(`/redis/online/${userId}`);
+}
+
+function getOnlineUsers() {
+    request("/redis/online-users");
+}
+
+function setTyping() {
+    request("/redis/typing", "POST", {
+        fromUser: document.getElementById("fromUser").value,
+        toUser: document.getElementById("toUser").value
+    });
+}
+
+function addRecentChat() {
+    request("/redis/recent-chat", "POST", {
+        message: document.getElementById("recentMessage").value
+    });
+}
+
+function getRecentChats() {
+    request("/redis/recent-chats");
+}
+
+function createSession() {
+    request("/redis/session", "POST", {
+        userId: document.getElementById("userId").value
+    });
+}
+
+function logoutUser() {
+    request("/redis/logout", "POST", {
+        userId: document.getElementById("userId").value
+    });
+}
+
+function incrementUnread() {
+    request("/redis/unread", "POST", {
+        userId: document.getElementById("userId").value
+    });
+}
+
+function getLastSeen() {
+    const userId = document.getElementById("userId").value;
+    request(`/redis/last-seen/${userId}`);
+}
+</script>
+
+</body>
+</html>

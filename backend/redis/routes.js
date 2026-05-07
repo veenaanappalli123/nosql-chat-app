@@ -11,6 +11,8 @@ const {
   getRecentChats,
   createSession,
   logoutUser,
+  incrementUnread,
+  getLastSeen,
 } = require("./controller");
 
 
@@ -52,6 +54,16 @@ router.post("/session", createSession);
 
 // FEATURE 7 — Logout User
 router.post("/logout", logoutUser);
+
+
+
+// FEATURE 8 — Increment Unread Messages
+router.post("/unread", incrementUnread);
+
+
+
+// FEATURE 9 — Get Last Seen
+router.get("/last-seen/:userId", getLastSeen);
 
 
 module.exports = router;

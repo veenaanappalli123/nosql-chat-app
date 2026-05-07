@@ -39,7 +39,7 @@ async function getOnline(req, res) {
 async function setTyping(req, res) {
   const { fromUser, toUser } = req.body;
 
-  // Typing expires automatically after 10 seconds
+  // Typing expires automatically
   await client.set(`typing:${fromUser}:${toUser}`, "true", {
     EX: 10,
   });
@@ -61,7 +61,6 @@ async function getOnlineUsers(req, res) {
 }
 
 
-
 // FEATURE 5 — Cache Recent Chats
 async function addRecentChat(req, res) {
   const { message } = req.body;
@@ -72,6 +71,7 @@ async function addRecentChat(req, res) {
     message: "Chat added to recent chats cache",
   });
 }
+
 
 
 // FEATURE 5 — Get Recent Chats
@@ -89,7 +89,6 @@ async function getRecentChats(req, res) {
 async function createSession(req, res) {
   const { userId } = req.body;
 
-  // Session expires after 1 hour
   await client.set(`session:${userId}`, "active", {
     EX: 3600,
   });
@@ -102,8 +101,6 @@ async function createSession(req, res) {
 
 
 // FEATURE 7 — Logout User
-
-
 async function logoutUser(req, res) {
   const { userId } = req.body;
 
@@ -116,8 +113,41 @@ async function logoutUser(req, res) {
   // Remove session
   await client.del(`session:${userId}`);
 
+  // Store last seen timestamp
+  await client.set(`lastSeen:${userId}`, new Date().toISOString());
+
   res.json({
     message: `User ${userId} logged out`,
+  });
+}
+
+
+
+// FEATURE 8 — Increment Unread Messages
+async function incrementUnread(req, res) {
+  const { userId } = req.body;
+
+  await client.incr(`unread:${userId}`);
+
+  const unreadCount = await client.get(`unread:${userId}`);
+
+  res.json({
+    userId,
+    unreadMessages: unreadCount,
+  });
+}
+
+
+
+// FEATURE 9 — Get Last Seen Timestamp
+async function getLastSeen(req, res) {
+  const { userId } = req.params;
+
+  const lastSeen = await client.get(`lastSeen:${userId}`);
+
+  res.json({
+    userId,
+    lastSeen,
   });
 }
 
@@ -131,4 +161,6 @@ module.exports = {
   getRecentChats,
   createSession,
   logoutUser,
+  incrementUnread,
+  getLastSeen,
 };

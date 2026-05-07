@@ -1,12 +1,15 @@
 const { client } = require("./db");
 
 
+
 // FEATURE 1 — Set Online Status
 async function setOnline(req, res) {
   const { userId } = req.body;
 
-  // Store online status
-  await client.set(`online:${userId}`, "true");
+  // Store online status with expiry
+  await client.set(`online:${userId}`, "true", {
+    EX: 300,
+  });
 
   // Add user to online users set
   await client.sAdd("onlineUsers", userId);
@@ -36,12 +39,16 @@ async function getOnline(req, res) {
 async function setTyping(req, res) {
   const { fromUser, toUser } = req.body;
 
-  await client.set(`typing:${fromUser}:${toUser}`, "true");
+  // Typing expires automatically after 10 seconds
+  await client.set(`typing:${fromUser}:${toUser}`, "true", {
+    EX: 10,
+  });
 
   res.json({
     message: `${fromUser} is typing to ${toUser}`,
   });
 }
+
 
 
 // FEATURE 4 — Get All Online Users
@@ -67,13 +74,50 @@ async function addRecentChat(req, res) {
 }
 
 
-
 // FEATURE 5 — Get Recent Chats
 async function getRecentChats(req, res) {
   const chats = await client.lRange("recentChats", 0, 9);
 
   res.json({
     recentChats: chats,
+  });
+}
+
+
+
+// FEATURE 6 — Create User Session
+async function createSession(req, res) {
+  const { userId } = req.body;
+
+  // Session expires after 1 hour
+  await client.set(`session:${userId}`, "active", {
+    EX: 3600,
+  });
+
+  res.json({
+    message: `Session created for ${userId}`,
+  });
+}
+
+
+
+// FEATURE 7 — Logout User
+
+
+async function logoutUser(req, res) {
+  const { userId } = req.body;
+
+  // Remove online status
+  await client.del(`online:${userId}`);
+
+  // Remove from online users set
+  await client.sRem("onlineUsers", userId);
+
+  // Remove session
+  await client.del(`session:${userId}`);
+
+  res.json({
+    message: `User ${userId} logged out`,
   });
 }
 
@@ -85,4 +129,6 @@ module.exports = {
   getOnlineUsers,
   addRecentChat,
   getRecentChats,
+  createSession,
+  logoutUser,
 };

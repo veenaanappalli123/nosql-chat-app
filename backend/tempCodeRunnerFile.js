@@ -1,5 +1,4 @@
-const express = require("express");
-const cors = require("cors");
+require("dotenv").config();
 
 const app = require("./app");
 const { connectMongo } = require("./mongodb/db");

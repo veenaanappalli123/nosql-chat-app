@@ -2,8 +2,68 @@ const express = require("express");
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  res.send("Redis routes working");
-});
+const {
+  setOnline,
+  getOnline,
+  setTyping,
+  getOnlineUsers,
+  addRecentChat,
+  getRecentChats,
+  createSession,
+  logoutUser,
+  incrementUnread,
+  getLastSeen,
+} = require("./controller");
+
+
+
+// FEATURE 1 — Set Online Status
+router.post("/online", setOnline);
+
+
+
+// FEATURE 2 — Get Online Status
+router.get("/online/:userId", getOnline);
+
+
+
+// FEATURE 3 — Typing Indicator
+router.post("/typing", setTyping);
+
+
+
+// FEATURE 4 — Get All Online Users
+router.get("/online-users", getOnlineUsers);
+
+
+
+// FEATURE 5 — Add Recent Chat
+router.post("/recent-chat", addRecentChat);
+
+
+
+// FEATURE 5 — Get Recent Chats
+router.get("/recent-chats", getRecentChats);
+
+
+
+// FEATURE 6 — Create Session
+router.post("/session", createSession);
+
+
+
+// FEATURE 7 — Logout User
+router.post("/logout", logoutUser);
+
+
+
+// FEATURE 8 — Increment Unread Messages
+router.post("/unread", incrementUnread);
+
+
+
+// FEATURE 9 — Get Last Seen
+router.get("/last-seen/:userId", getLastSeen);
+
 
 module.exports = router;

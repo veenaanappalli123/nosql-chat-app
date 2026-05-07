@@ -6,7 +6,11 @@ const { client } = require("./db");
 async function setOnline(req, res) {
   const { userId } = req.body;
 
+  // Store online status
   await client.set(`online:${userId}`, "true");
+
+  // Add user to online users set
+  await client.sAdd("onlineUsers", userId);
 
   res.json({
     message: `User ${userId} is online`,
@@ -33,8 +37,6 @@ async function getOnline(req, res) {
 async function setTyping(req, res) {
   const { fromUser, toUser } = req.body;
 
-  console.log(fromUser, toUser);
-
   await client.set(`typing:${fromUser}:${toUser}`, "true");
 
   res.json({
@@ -42,8 +44,21 @@ async function setTyping(req, res) {
   });
 }
 
+
+
+// FEATURE 4 — Get All Online Users
+async function getOnlineUsers(req, res) {
+  const users = await client.sMembers("onlineUsers");
+
+  res.json({
+    onlineUsers: users,
+  });
+}
+
+
 module.exports = {
   setOnline,
   getOnline,
   setTyping,
+  getOnlineUsers,
 };

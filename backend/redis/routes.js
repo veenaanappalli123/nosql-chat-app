@@ -6,8 +6,8 @@ const {
   setOnline,
   getOnline,
   setTyping,
+  getOnlineUsers,
 } = require("./controller");
-
 
 
 // FEATURE 1 — Set Online Status
@@ -22,6 +22,11 @@ router.get("/online/:userId", getOnline);
 
 // FEATURE 3 — Typing Indicator
 router.post("/typing", setTyping);
+
+
+//FEATURE 4 — Get All Online Users
+router.get("/online-users", getOnlineUsers);
+
 
 
 module.exports = router;

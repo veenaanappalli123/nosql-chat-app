@@ -1,9 +1,11 @@
 const express = require("express");
-
 const router = express.Router();
+const neoController = require("./controller");
 
-router.get("/", (req, res) => {
-  res.send("Neo4j routes working");
-});
+// Add friend
+router.post("/add-friend", neoController.addFriend);
+
+// Check friend relationship
+router.post("/check-friend", neoController.checkFriend);
 
 module.exports = router;

@@ -7,7 +7,10 @@ const {
   getOnline,
   setTyping,
   getOnlineUsers,
+  addRecentChat,
+  getRecentChats,
 } = require("./controller");
+
 
 
 // FEATURE 1 — Set Online Status
@@ -24,9 +27,17 @@ router.get("/online/:userId", getOnline);
 router.post("/typing", setTyping);
 
 
-//FEATURE 4 — Get All Online Users
+
+// FEATURE 4 — Get All Online Users
 router.get("/online-users", getOnlineUsers);
 
+
+
+// FEATURE 5 — Add Recent Chat
+router.post("/recent-chat", addRecentChat);
+
+// FEATURE 5 — Get Recent Chats
+router.get("/recent-chats", getRecentChats);
 
 
 module.exports = router;

@@ -1,7 +1,6 @@
 const { client } = require("./db");
 
 
-
 // FEATURE 1 — Set Online Status
 async function setOnline(req, res) {
   const { userId } = req.body;
@@ -45,7 +44,6 @@ async function setTyping(req, res) {
 }
 
 
-
 // FEATURE 4 — Get All Online Users
 async function getOnlineUsers(req, res) {
   const users = await client.sMembers("onlineUsers");
@@ -56,9 +54,35 @@ async function getOnlineUsers(req, res) {
 }
 
 
+
+// FEATURE 5 — Cache Recent Chats
+async function addRecentChat(req, res) {
+  const { message } = req.body;
+
+  await client.lPush("recentChats", message);
+
+  res.json({
+    message: "Chat added to recent chats cache",
+  });
+}
+
+
+
+// FEATURE 5 — Get Recent Chats
+async function getRecentChats(req, res) {
+  const chats = await client.lRange("recentChats", 0, 9);
+
+  res.json({
+    recentChats: chats,
+  });
+}
+
+
 module.exports = {
   setOnline,
   getOnline,
   setTyping,
   getOnlineUsers,
+  addRecentChat,
+  getRecentChats,
 };

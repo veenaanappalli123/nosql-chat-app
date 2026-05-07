@@ -1,8 +1,8 @@
-
-
-//setonline -feature 1
 const { client } = require("./db");
 
+
+
+// FEATURE 1 — Set Online Status
 async function setOnline(req, res) {
   const { userId } = req.body;
 
@@ -14,7 +14,8 @@ async function setOnline(req, res) {
 }
 
 
-//get online -feature2
+
+// FEATURE 2 — Get Online Status
 async function getOnline(req, res) {
   const { userId } = req.params;
 
@@ -28,11 +29,21 @@ async function getOnline(req, res) {
 
 
 
+// FEATURE 3 — Typing Indicator
+async function setTyping(req, res) {
+  const { fromUser, toUser } = req.body;
+
+  console.log(fromUser, toUser);
+
+  await client.set(`typing:${fromUser}:${toUser}`, "true");
+
+  res.json({
+    message: `${fromUser} is typing to ${toUser}`,
+  });
+}
+
 module.exports = {
   setOnline,
   getOnline,
+  setTyping,
 };
-
-
-
-

@@ -2,8 +2,8 @@ const express = require("express");
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  res.send("Redis routes working");
-});
+const { setOnline } = require("./controller");
+
+router.post("/online", setOnline);
 
 module.exports = router;

@@ -1,9 +1,22 @@
-require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
 
-const app = require("./app");
+const app = express();
 
-const PORT = 3000;
+// Middlewares
+app.use(cors());
+app.use(express.json());
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+// Load Neo4j routes
+const neoRoutes = require("./neo4j/routes");
+app.use("/neo", neoRoutes);
+
+// Default route
+app.get("/", (req, res) => {
+    res.send("API is running...");
+});
+
+// Start server
+app.listen(3000, () => {
+    console.log("Server running on port 3000");
 });

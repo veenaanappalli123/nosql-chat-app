@@ -1,3 +1,6 @@
+
+
+//setonline -feature 1
 const { client } = require("./db");
 
 async function setOnline(req, res) {
@@ -10,6 +13,26 @@ async function setOnline(req, res) {
   });
 }
 
+
+//get online -feature2
+async function getOnline(req, res) {
+  const { userId } = req.params;
+
+  const status = await client.get(`online:${userId}`);
+
+  res.json({
+    userId,
+    online: status,
+  });
+}
+
+
+
 module.exports = {
   setOnline,
+  getOnline,
 };
+
+
+
+

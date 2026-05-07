@@ -20,3 +20,18 @@ app.get("/", (req, res) => {
 app.listen(3000, () => {
     console.log("Server running on port 3000");
 });
+const { client } = require("./redis/db");
+
+const PORT = 3000;
+
+async function startServer() {
+  await client.connect();
+
+  console.log("Redis connected");
+
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+startServer();
